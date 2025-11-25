@@ -76,7 +76,7 @@ jobs:
                 matrix_include="${matrix_include},"
               fi
 
-              matrix_include="${matrix_include}{\"dockerfile\":\"$dockerfile\",\"image\":\"$image_name\",\"tag\":\"$tag_base\",\"target\":\"\"}"
+              matrix_include="${matrix_include}{\"dockerfile\":\"$dockerfile\",\"image\":\"$image_name\",\"tag\":\"$tag_base\",\"target\":\"\",\"context\":\"$dir_path\"}"
             else
               # Build each target
               while IFS= read -r target; do
@@ -89,7 +89,7 @@ jobs:
                 # Create tag with target suffix
                 full_tag="${tag_base}-${target}"
 
-                matrix_include="${matrix_include}{\"dockerfile\":\"$dockerfile\",\"image\":\"$image_name\",\"tag\":\"$full_tag\",\"target\":\"$target\"}"
+                matrix_include="${matrix_include}{\"dockerfile\":\"$dockerfile\",\"image\":\"$image_name\",\"tag\":\"$full_tag\",\"target\":\"$target\",\"context\":\"$dir_path\"}"
               done <<< "$targets"
             fi
           done
@@ -135,7 +135,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ${{ matrix.dockerfile != 'Dockerfile' && format('./{0}', dirname(matrix.dockerfile)) || '.' }}
+          context: ${{ matrix.context || '.' }}
           file: ${{ matrix.dockerfile }}
           target: ${{ matrix.target }}
           push: true

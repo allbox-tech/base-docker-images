@@ -12,14 +12,5 @@ RUN apk add --update nano curl
 
 FROM base AS dev_base
 
-ARG user
-ARG uid
-
 # Install nodejs and npm to use chokidar for octane watch
 RUN apk add --update nodejs npm
-
-# Use the same user as hosts user to prevent permission issues
-RUN addgroup -g $uid $user \
-  && adduser -u $uid -D -G $user -G www-data -G root $user \
-  && mkdir -p /home/$user/.composer \
-  && chown -R $user:$user /home/$user
